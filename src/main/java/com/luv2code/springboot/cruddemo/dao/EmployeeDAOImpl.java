@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
+
 
 import com.luv2code.springboot.cruddemo.entity.Employee;
 
@@ -34,13 +34,12 @@ public class EmployeeDAOImpl implements EmployeeDAO {
     }
 
     @Override
-    @Transactional
-    public void save(Employee employee) {
-        entityManager.persist(employee);
+    public Employee save(Employee employee) {
+        Employee dbEmployee = entityManager.merge(employee);
+        return dbEmployee;
     }
 
     @Override
-    @Transactional
     public void update(Employee employee) {
         entityManager.merge(employee);
     }
