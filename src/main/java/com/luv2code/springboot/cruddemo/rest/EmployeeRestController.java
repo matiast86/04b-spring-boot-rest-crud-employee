@@ -37,16 +37,21 @@ public class EmployeeRestController {
         return employee;
     }
 
-    @PostMapping("/employees/create")
-    public Employee creatEmployee(@RequestBody String firsName, String lastName, String email) {
+    @PostMapping("/employees")
+    public Employee creatEmployee(@RequestBody Employee employee) {
 
-        return null;
+        employee.setId(0);
+        Employee dbEmployee = employeeService.save(employee);
+
+        return dbEmployee;
     }
 
-    @PutMapping("/employees/{id}")
-    public Employee updatEmployee(@PathVariable int id, String firstName, String lastName, String email) {
+    @PutMapping("/employees")
+    public Employee updatEmployee(@RequestBody Employee employee) {
+        
+        employeeService.update(employee);
 
-        return null;
+        return employee;
     }
 
     @DeleteMapping("/employees/{id}")
