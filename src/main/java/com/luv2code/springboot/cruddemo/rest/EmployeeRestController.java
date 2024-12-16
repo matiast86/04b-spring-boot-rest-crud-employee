@@ -49,7 +49,7 @@ public class EmployeeRestController {
     @PutMapping("/employees")
     public Employee updatEmployee(@RequestBody Employee employee) {
         
-        employeeService.update(employee);
+        employeeService.save(employee);
 
         return employee;
     }

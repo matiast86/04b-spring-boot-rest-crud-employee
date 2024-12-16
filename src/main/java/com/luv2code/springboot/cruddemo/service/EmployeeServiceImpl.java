@@ -1,34 +1,37 @@
 package com.luv2code.springboot.cruddemo.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import com.luv2code.springboot.cruddemo.dao.EmployeeDAO;
+import com.luv2code.springboot.cruddemo.dao.EmployeeRepository;
 import com.luv2code.springboot.cruddemo.entity.Employee;
 import com.luv2code.springboot.cruddemo.rest.EmployeeNotFoundException;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
 
-    private EmployeeDAO employeeDAO;
+    private EmployeeRepository employeeRepository;
 
     @Autowired
-    public EmployeeServiceImpl(EmployeeDAO theEmployeeDAO) {
-        employeeDAO = theEmployeeDAO;
+    public EmployeeServiceImpl(EmployeeRepository theEmployeeRepository) {
+        employeeRepository = theEmployeeRepository;
     }
 
     @Override
     public List<Employee> findAll() {
-        return employeeDAO.findAll();
+        return employeeRepository.findAll();
     }
 
     @Override
     public Employee findById(int id) {
-        Employee employee = employeeDAO.findById(id);
-        if (employee == null) {
+        Optional<Employee> result = employeeRepository.findById(id);
+
+        Employee employee = null;
+        if (result.isPresent()) {
+            employee = result.get();
+        } else {
             throw new EmployeeNotFoundException("Employee not found");
         }
 
@@ -36,26 +39,16 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    @Transactional
     public Employee save(Employee employee) {
-        Employee dbEmployee = employeeDAO.save(employee);
+        Employee dbEmployee = employeeRepository.save(employee);
         return dbEmployee;
     }
 
     @Override
-    @Transactional
-    public void update(Employee employee) {
-        employeeDAO.update(employee);
-    }
-
-    @Override
-    @Transactional
     public void delete(int id) {
-        Employee employeeToDelete = employeeDAO.findById(id);
-        if (employeeToDelete == null) {
-            throw new EmployeeNotFoundException("Employee not found");
-        }
-        employeeDAO.delete(id);
+        this.findById(id);
+
+        employeeRepository.deleteById(id);
     }
 
 }
